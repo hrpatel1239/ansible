@@ -1,0 +1,4 @@
+- src git+https://alm-github.system.us.hsbc/google-foundation-platform/locked_type3_vm
+    name: lockdown
+    version: master 
+    

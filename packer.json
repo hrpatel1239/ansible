@@ -1,0 +1,66 @@
+{
+	"variables": {
+		"name": "ejs-imagefamily-type3-rhel7-stage3-tenable-{{isotime `20060102150405`}}",
+		"family": "ejs-imagefamily-type3-rhel7-stage3-tenable-scanner",
+		"region": "europe-west2",
+		"zone": "{{ user `region` }}-b",
+		"source_project": "next-1234567-nextcompute-prod",
+		"source_image_family": "ejs-imagefamily-type3-rhel7-stage2",
+		"build_project": "next-9143489-ejs-dev",
+		"label_service": "tenable-scanner",
+		"label_role": "security-scanner",
+		"label_creator": "jenkins-slave_next-1234567-coretommation-dev",
+		"label_next_base_image_class": "type3"
+	},
+	"builders": [
+		{
+			"type": "googlecompute",
+			"project_id": "{{ user `build_project` }}",
+			"zone": "{{ user `zone` }}",
+			"source_image_project_id": "{{ user `source_project` }}",
+			"source_image_family": "{{ user `source_image_family` }}",
+			"image_name": "{{ user `name` }}",
+			"image_family": "{{ user `family` }}",
+			"image_labels": {
+				"service": "{{ user `label_service` }}",
+				"role": "{{ user `label_role` }}",
+				"creator": "{{ user `label_creator` }}",
+				"environment": "dev",
+				"next_base_image_class": "{{ user `label_next_base_image_class` }}"
+			},
+			"instance_name": "{{ user `name` }}",
+			"subnextwork": "projects/next-1234567-vpchost-eu-dev/regions/{{ user `region` }}/subnextwork/cinternal-vpc1-{{ user `region` }}",
+			"use_internal_ip": "true",
+			"omit_external_ip": "true",
+			"disk_size": "60",
+			"disk_type": "pd-ssd",
+			"service_account_email": "314088833235-compute@developer.gserviceaccount.com",
+			"tags": [
+				"tt-1234567-coretomation-source-tag-a-i-jenkins",
+				"fwtag-all-dev-out-alm-github"
+			],
+			"ssh_username": "packer"
+		}
+	],
+	"provisioners": [
+		{
+			"type": "ansible",
+			"playbook_file": "ansible/playbook.yml"
+		},
+		{
+			"type": "ansible",
+			"galaxy_file": "requirements.yml",
+			"playbook_file": "lockdonw.yml",
+			"user": "packer"
+		}
+	],
+	"post-processors":[
+		{
+			"type": "shell-local",
+			"inline": [
+				"gcloud --project=next-1234567-nextcompute-dev compute images create {{ user `name` }} --family={{ user `family` }} --source-image-project={{ user `build_project` }} --source-image={{ user `name` }} --labels=service={{ user `label_service` }},role={{ user `label_role` }},creator={{ user `label_creator` }},environment=prod,next_base_image_class={{ user `label_next_base_image_class` }}",
+				"gcloud --project=next-1234567-nextcompute-dev compute images create {{ user `name` }} --family={{ user `family` }} --source-image-project=next-1234567-nextcompute-dev --source-image={{ user `name` }} --labels=service={{ user `label_service` }},role={{ user `label_role` }},creator={{ user `label_creator` }},environment=prod,next_base_image_class={{ user `label_next_base_image_class` }}"
+			]
+		}
+	]
+}
