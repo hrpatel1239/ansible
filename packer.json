@@ -2,7 +2,7 @@
 	"variables": {
 		"name": "ejs-imagefamily-type3-rhel7-stage3-tenable-{{isotime `20060102150405`}}",
 		"family": "ejs-imagefamily-type3-rhel7-stage3-tenable-scanner",
-		"region": "europe-west2",
+		"region": "us-east1",
 		"zone": "{{ user `region` }}-b",
 		"source_project": "next-1234567-nextcompute-prod",
 		"source_image_family": "ejs-imagefamily-type3-rhel7-stage2",

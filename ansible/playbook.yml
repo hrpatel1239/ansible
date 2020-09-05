@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    host_shutdown: false
+  roles:
+    - tenable-scanner
+
+
